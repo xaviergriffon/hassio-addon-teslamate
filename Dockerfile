@@ -47,14 +47,11 @@ RUN \
     && ln -s /usr/lib/bashio/bashio /usr/bin/bashio \
     && rm -rf /tmp/bashio
 
-COPY --chown=root scripts/*.sh /
-RUN chmod a+x /*.sh
+COPY --chown=root --chmod=555 scripts/*.sh /
 
-COPY --chown=root services/teslamate/run services/teslamate/finish /etc/services.d/teslamate/
-RUN chmod a+x /etc/services.d/teslamate/*
+COPY --chown=root --chmod=555 services/teslamate/run services/teslamate/finish /etc/services.d/teslamate/
 
-COPY --chown=root services/nginx/run services/nginx/finish /etc/services.d/nginx/
-RUN chmod a+x /etc/services.d/nginx/*
+COPY --chown=root --chmod=555 services/nginx/run services/nginx/finish /etc/services.d/nginx/
 
 COPY --chown=root services/nginx/teslamate.conf /etc/nginx/conf.d/
 
