@@ -1,5 +1,6 @@
 ARG TESLAMATE_TAG
 
+
 FROM teslamate/teslamate:${TESLAMATE_TAG}
 
 ARG ARCH
@@ -52,13 +53,5 @@ COPY --chown=nonroot --chmod=555 services/nginx/run services/nginx/finish /etc/s
 
 COPY --chown=nonroot --chmod=555 services/nginx/teslamate.conf /etc/nginx/conf.d/
 
-#---
-
-FROM teslamate/grafana:${TESLAMATE_TAG} as grafana
-
-COPY --from=grafana --chown=nonroot /dashboards /dashboards
-COPY --from=grafana --chown=nonroot /dashboards_internal /dashboards
-
-USER nonroot:nonroot
 # S6-Overlay
 ENTRYPOINT ["/init"]
