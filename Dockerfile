@@ -1,9 +1,5 @@
 ARG TESLAMATE_TAG
 
-FROM teslamate/grafana:${TESLAMATE_TAG} as grafana
-
-#---
-
 FROM teslamate/teslamate:${TESLAMATE_TAG}
 
 ARG ARCH
@@ -55,6 +51,10 @@ COPY --chown=nonroot --chmod=555 services/teslamate/run services/teslamate/finis
 COPY --chown=nonroot --chmod=555 services/nginx/run services/nginx/finish /etc/services.d/nginx/
 
 COPY --chown=nonroot --chmod=555 services/nginx/teslamate.conf /etc/nginx/conf.d/
+
+#---
+
+FROM teslamate/grafana:${TESLAMATE_TAG} as grafana
 
 COPY --from=grafana --chown=nonroot /dashboards /dashboards
 COPY --from=grafana --chown=nonroot /dashboards_internal /dashboards
