@@ -29,9 +29,6 @@ RUN \
         tzdata \
         wget \
     \
-    && wget https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-${ARCH}.tar.gz \
-    && tar zxvf s6-overlay-${ARCH}.tar.gz -C / \
-    && rm -f s6-overlay-${ARCH}.tar.gz \
     && mkdir -p /etc/fix-attrs.d \
     && mkdir -p /etc/services.d \
     \
