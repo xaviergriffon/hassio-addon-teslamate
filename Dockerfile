@@ -43,15 +43,19 @@ RUN \
     && ln -s /usr/lib/bashio/bashio /usr/bin/bashio \
     && rm -rf /tmp/bashio
 
+RUN \
+    set -x \
+    && apt-get update && apt-get reinstall -y netcat-openbsd
 
 
 COPY --chown=nonroot --chmod=555 scripts/*.sh /
 
 COPY --chown=nonroot --chmod=555 services/teslamate/run services/teslamate/finish /etc/services.d/teslamate/
 
-COPY --chown=nonroot --chmod=555 services/nginx/run services/nginx/finish /etc/services.d/nginx/
+COPY --chown=nonroot --chmod=775 services/nginx/run services/nginx/finish /etc/services.d/nginx/
 
-COPY --chown=nonroot --chmod=555 services/nginx/teslamate.conf /etc/nginx/conf.d/
+COPY --chown=nonroot --chmod=775 services/nginx/teslamate.conf /etc/nginx/conf.d/
 
+USER nonroot:nonroot
 # S6-Overlay
 ENTRYPOINT ["/init"]
