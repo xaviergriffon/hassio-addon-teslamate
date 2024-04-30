@@ -18,10 +18,6 @@ ENV \
 
 USER root
 
-RUN \
-    set -x \
-    && apt-get update && apt-get reinstall netcat-openbsd
-
 # Commands taken from HA Ubuntu base Dockerfile but switched to wget as curl didn't work using buildx
 # https://github.com/home-assistant/docker-base/blob/master/ubuntu/amd64/Dockerfile
 RUN \
@@ -35,7 +31,6 @@ RUN \
         nginx \
         tzdata \
         wget \
-    && rm -rf /var/lib/apt/lists/* \
     \
     && wget https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-${ARCH}.tar.gz \
     && tar zxvf s6-overlay-${ARCH}.tar.gz -C / \
@@ -59,7 +54,7 @@ COPY --chown=nonroot --chmod=555 services/teslamate/run services/teslamate/finis
 
 COPY --chown=nonroot --chmod=555 services/nginx/run services/nginx/finish /etc/services.d/nginx/
 
-COPY --chown=nonroot services/nginx/teslamate.conf /etc/nginx/conf.d/
+COPY --chown=nonroot --chmod=555 services/nginx/teslamate.conf /etc/nginx/conf.d/
 
 COPY --from=grafana --chown=nonroot /dashboards /dashboards
 COPY --from=grafana --chown=nonroot /dashboards_internal /dashboards
