@@ -47,16 +47,21 @@ RUN \
     && ln -s /usr/lib/bashio/bashio /usr/bin/bashio \
     && rm -rf /tmp/bashio
 
-COPY --chown=root --chmod=555 scripts/*.sh /
+RUN \
+    set -x \
+    && apt-get update && apt-get reinstall -y --no-install-recommends \
+        netcat-openbsd
 
-COPY --chown=root --chmod=555 services/teslamate/run services/teslamate/finish /etc/services.d/teslamate/
+COPY --chown=nonroot --chmod=555 scripts/*.sh /
 
-COPY --chown=root --chmod=555 services/nginx/run services/nginx/finish /etc/services.d/nginx/
+COPY --chown=nonroot --chmod=555 services/teslamate/run services/teslamate/finish /etc/services.d/teslamate/
 
-COPY --chown=root services/nginx/teslamate.conf /etc/nginx/conf.d/
+COPY --chown=nonroot --chmod=555 services/nginx/run services/nginx/finish /etc/services.d/nginx/
 
-COPY --from=grafana --chown=root /dashboards /dashboards
-COPY --from=grafana --chown=root /dashboards_internal /dashboards
+COPY --chown=nonroot services/nginx/teslamate.conf /etc/nginx/conf.d/
+
+COPY --from=grafana --chown=nonroot /dashboards /dashboards
+COPY --from=grafana --chown=nonroot /dashboards_internal /dashboards
 
 USER nonroot:nonroot
 # S6-Overlay
