@@ -18,6 +18,10 @@ ENV \
 
 USER root
 
+RUN \
+    set -x \
+    && apt-get update && apt-get reinstall netcat-openbsd
+
 # Commands taken from HA Ubuntu base Dockerfile but switched to wget as curl didn't work using buildx
 # https://github.com/home-assistant/docker-base/blob/master/ubuntu/amd64/Dockerfile
 RUN \
@@ -47,10 +51,7 @@ RUN \
     && ln -s /usr/lib/bashio/bashio /usr/bin/bashio \
     && rm -rf /tmp/bashio
 
-RUN \
-    set -x \
-    && apt-get update && apt-get reinstall -y --no-install-recommends \
-        netcat-openbsd
+
 
 COPY --chown=nonroot --chmod=555 scripts/*.sh /
 
