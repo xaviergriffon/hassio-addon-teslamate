@@ -58,5 +58,6 @@ COPY --chown=root services/nginx/teslamate.conf /etc/nginx/conf.d/
 COPY --from=grafana --chown=root /dashboards /dashboards
 COPY --from=grafana --chown=root /dashboards_internal /dashboards
 
+USER nonroot:nonroot
 # S6-Overlay
 ENTRYPOINT ["/init"]
