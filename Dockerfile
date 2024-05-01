@@ -5,7 +5,7 @@ FROM teslamate/teslamate:${TESLAMATE_TAG}
 
 ARG ARCH
 ARG BASHIO_VERSION=0.11.0
-ARG S6_OVERLAY_VERSION=2.1.0.2
+ARG S6_OVERLAY_VERSION=3.1.6.2
 
 ENV \
     DEBIAN_FRONTEND="noninteractive" \
@@ -28,10 +28,16 @@ RUN \
         nginx \
         tzdata \
         wget \
-    \
-    && wget https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-${ARCH}.tar.gz \
-    && tar zxvf s6-overlay-${ARCH}.tar.gz --skip-old-files -C / \
-    && rm -f s6-overlay-${ARCH}.tar.gz \
+        xz-utils
+
+ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-noarch.tar.xz /tmp
+RUN tar -C / -Jxpf /tmp/s6-overlay-noarch.tar.xz
+ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-${ARCH}.tar.xz /tmp
+RUN tar -C / -Jxpf /tmp/s6-overlay-${ARCH}.tar.xz
+
+RUN \
+    rm -f /tmp/s6-overlay-noarch.tar.gz \
+    rm -f /tmp/s6-overlay-${ARCH}.tar.gz \
     && mkdir -p /etc/fix-attrs.d \
     && mkdir -p /etc/services.d \
     \
