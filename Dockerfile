@@ -30,14 +30,19 @@ RUN \
         wget \
         xz-utils
 
-ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-noarch.tar.xz /tmp
-RUN tar -C / -Jxpf /tmp/s6-overlay-noarch.tar.xz
-ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-${ARCH}.tar.xz /tmp
-RUN tar -C / -Jxpf /tmp/s6-overlay-${ARCH}.tar.xz
+RUN \
+    set -x \
+    && S6_ARCH=$(if [ "$ARCH" = "amd64" ]; then echo "x86_64"; else echo $ARCH; fi) \
+    && wget https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-noarch.tar.xz \
+    && tar -C / -Jxpf s6-overlay-noarch.tar.xz \
+    \
+    && rm s6-overlay-noarch.tar.xz \
+    && wget https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-${S6_ARCH}.tar.xz \
+    && tar -C / -Jxpf s6-overlay-${S6_ARCH}.tar.xz \
+    && rm s6-overlay-${S6_ARCH}.tar.xz
 
 RUN \
-    rm -f /tmp/s6-overlay-noarch.tar.gz \
-    rm -f /tmp/s6-overlay-${ARCH}.tar.gz \
+    set -x \
     && mkdir -p /etc/fix-attrs.d \
     && mkdir -p /etc/services.d \
     \
