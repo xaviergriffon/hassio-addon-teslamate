@@ -1,5 +1,8 @@
 ARG TESLAMATE_TAG
 
+FROM teslamate/grafana:${TESLAMATE_TAG} as grafana
+
+#---
 
 FROM teslamate/teslamate:${TESLAMATE_TAG}
 
@@ -33,13 +36,18 @@ RUN \
 RUN \
     set -x \
     && S6_ARCH=$(if [ "$ARCH" = "amd64" ]; then echo "x86_64"; else echo $ARCH; fi) \
+    \
     && wget https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-noarch.tar.xz \
     && tar -C / -Jxpf s6-overlay-noarch.tar.xz \
-    \
     && rm s6-overlay-noarch.tar.xz \
+    \
     && wget https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-${S6_ARCH}.tar.xz \
     && tar -C / -Jxpf s6-overlay-${S6_ARCH}.tar.xz \
-    && rm s6-overlay-${S6_ARCH}.tar.xz
+    && rm s6-overlay-${S6_ARCH}.tar.xz \
+    \
+    && wget https://github.com/just-containers/s6-overlay/releases/download/v3.1.6.2/s6-overlay-symlinks-noarch.tar.xz \
+    && tar -C / -Jxpf s6-overlay-symlinks-noarch.tar.xz \
+    && rm s6-overlay-symlinks-noarch.tar.xz
 
 RUN \
     set -x \
@@ -59,14 +67,15 @@ RUN \
     && apt-get update && apt-get reinstall -y netcat-openbsd
 
 
-COPY --chown=nonroot --chmod=555 scripts/*.sh /
+COPY --chown=root --chmod=555 scripts/*.sh /
 
-COPY --chown=nonroot --chmod=555 services/teslamate/run services/teslamate/finish /etc/services.d/teslamate/
+COPY --chown=root --chmod=555 services/teslamate/run services/teslamate/finish /etc/services.d/teslamate/
 
-COPY --chown=nonroot --chmod=775 services/nginx/run services/nginx/finish /etc/services.d/nginx/
+COPY --chown=root --chmod=555 services/nginx/run services/nginx/finish /etc/services.d/nginx/
 
-COPY --chown=nonroot --chmod=775 services/nginx/teslamate.conf /etc/nginx/conf.d/
+COPY --chown=root --chmod=555 services/nginx/teslamate.conf /etc/nginx/conf.d/
 
-USER nonroot:nonroot
+COPY --from=grafana --chown=root /dashboards /dashboards
+COPY --from=grafana --chown=root /dashboards_internal /dashboards
 # S6-Overlay
 ENTRYPOINT ["/init"]
