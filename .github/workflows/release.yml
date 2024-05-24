@@ -48,7 +48,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           path: repo
-          repository: matt-FFFFFF/hassio-addon-repository
+          repository: xaviergriffon/hassio-addon-repository
           token: ${{ secrets.REPO_PAT }}
       - name: Update addon repo
         run: |
