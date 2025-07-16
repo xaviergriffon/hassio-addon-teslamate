@@ -1,4 +1,8 @@
 # Changelog
+## 0.30.0
+
+* Fix bug ulimit
+
 ## 0.29.0
 
 * Teslamate 1.33.0
