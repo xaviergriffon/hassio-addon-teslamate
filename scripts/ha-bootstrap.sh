@@ -29,7 +29,9 @@ if [ $(bashio::config 'grafana_import_dashboards') == 'true' ]; then
     /dashboards.sh restore
 fi
 
-# https://developers.home-assistant.io/blog/2023/04/13/new_limits_for_add_ons/
-ulimit -n 1048576
+# Set max open file limit to avoid memory allocation issues
+if [ "$(ulimit -Hn)" -gt 524288 ]; then
+    ulimit -n 524288
+fi
 
 exec $(/usr/bin/env sh) /entrypoint.sh "$@"
