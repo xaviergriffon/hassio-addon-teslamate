@@ -1,6 +1,6 @@
 ARG TESLAMATE_TAG
 
-FROM teslamate/grafana:${TESLAMATE_TAG} as grafana
+FROM teslamate/grafana:${TESLAMATE_TAG} AS grafana
 
 #---
 

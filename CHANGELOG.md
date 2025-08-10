@@ -1,7 +1,7 @@
 # Changelog
 
-## 0.30.0
+## 0.31.0
 
-* Fix bug ulimit
+* Teslamate 2.1.0
 
 [Full Changelog](https://github.com/xaviergriffon/hassio-addon-teslamate/blob/main/CHANGELOG-FULL.md)
