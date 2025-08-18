@@ -1,4 +1,8 @@
 # Changelog
+## 0.32.0
+
+* Teslamate 2.1.1
+
 ## 0.31.0
 
 * Teslamate 2.1.0
